@@ -1,0 +1,1 @@
+"..\System\timer.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\Driver;..\System;..\User) DEBUG OBJECTEXTEND PRINT(.\Listings\timer.lst) OBJECT(..\Output\timer.obj)

@@ -1,0 +1,128 @@
+C51 COMPILER V9.59.0.0   TEMP                                                              11/22/2021 13:21:56 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE TEMP
+OBJECT MODULE PLACED IN ..\Output\temp.obj
+COMPILER INVOKED BY: F:\Keil_v5\C51\BIN\C51.EXE ..\Driver\temp.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\Driver;..\System;..\
+                    -User) DEBUG OBJECTEXTEND PRINT(.\Listings\temp.lst) OBJECT(..\Output\temp.obj)
+
+line level    source
+
+   1          #include "temp.h"
+   2          
+   3          void Delay1ms(uint y)
+   4          {
+   5   1              uint x;
+   6   1              for (; y > 0; y--)
+   7   1              {
+   8   2                      for (x = 110; x > 0; x--);
+   9   2              }
+  10   1      }
+  11          
+  12          bit Ds18b20Init()
+  13          {
+  14   1              uchar i;
+  15   1              DSPORT = 0;                      //将总线拉低480us~960us
+  16   1              i = 70;
+  17   1              while (i--);//延时642us
+  18   1              DSPORT = 1;                     //然后拉高总线，如果DS18B20做出反应会将在15us~60us后总线拉低
+  19   1              i = 0;
+  20   1              while (DSPORT)  //等待DS18B20拉低总线
+  21   1              {
+  22   2                      Delay1ms(1);
+  23   2                      i++;
+  24   2                      if (i > 5)//等待>5MS
+  25   2                      {
+  26   3                              return 0;//初始化失败
+  27   3                      }
+  28   2      
+  29   2              }
+  30   1              return 1;//初始化成功
+  31   1      }
+  32          
+  33          void Ds18b20WriteByte(uchar dat)
+  34          {
+  35   1              uint i, j;
+  36   1      
+  37   1              for (j = 0; j < 8; j++)
+  38   1              {
+  39   2                      DSPORT = 0;               //每写入一位数据之前先把总线拉低1us
+  40   2                      i++;
+  41   2                      DSPORT = dat & 0x01;  //然后写入一个数据，从最低位开始
+  42   2                      i = 6;
+  43   2                      while (i--); //延时68us，持续时间最少60us
+  44   2                      DSPORT = 1;     //然后释放总线，至少1us给总线恢复时间才能接着写入第二个数值
+  45   2                      dat >>= 1;
+  46   2              }
+  47   1      }
+  48          
+  49          uchar Ds18b20ReadByte()
+  50          {
+  51   1              uchar byte, bi;
+  52   1              uint i, j;
+  53   1              for (j = 8; j > 0; j--)
+  54   1              {
+C51 COMPILER V9.59.0.0   TEMP                                                              11/22/2021 13:21:56 PAGE 2   
+
+  55   2                      DSPORT = 0;//先将总线拉低1us
+  56   2                      i++;
+  57   2                      DSPORT = 1;//然后释放总线
+  58   2                      i++;
+  59   2                      i++;//延时6us等待数据稳定
+  60   2                      bi = DSPORT;     //读取数据，从最低位开始读取
+  61   2                      /*将byte左移一位，然后与上右移7位后的bi，注意移动之后移掉那位补0。*/
+  62   2                      byte = (byte >> 1) | (bi << 7);
+  63   2                      i = 4;          //读取完之后等待48us再接着读取下一个数
+  64   2                      while (i--);
+  65   2              }
+  66   1              return byte;
+  67   1      }
+  68          
+  69          void  Ds18b20ChangTemp()
+  70          {
+  71   1              Ds18b20Init();
+  72   1              Delay1ms(1);
+  73   1              Ds18b20WriteByte(0xcc);         //跳过ROM操作命令          
+  74   1              Ds18b20WriteByte(0x44);     //温度转换命令
+  75   1              //Delay1ms(100);        //等待转换成功，而如果你是一直刷着的话，就不用这个延时了
+  76   1      
+  77   1      }
+  78          
+  79          void  Ds18b20ReadTempCom()
+  80          {
+  81   1      
+  82   1              Ds18b20Init();
+  83   1              Delay1ms(1);
+  84   1              Ds18b20WriteByte(0xcc);  //跳过ROM操作命令
+  85   1              Ds18b20WriteByte(0xbe);  //发送读取温度命令
+  86   1      }
+  87          
+  88          int Ds18b20ReadTemp()
+  89          {
+  90   1              int temp = 0;
+  91   1              uchar tmh, tml;
+  92   1              Ds18b20ChangTemp();                             //先写入转换命令
+  93   1              Ds18b20ReadTempCom();                   //然后等待转换完后发送读取温度命令
+  94   1              tml = Ds18b20ReadByte();                //读取温度值共16位，先读低字节
+  95   1              tmh = Ds18b20ReadByte();                //再读高字节
+  96   1              temp = tmh;
+  97   1              temp <<= 8;
+  98   1              temp |= tml;
+  99   1              return temp;
+ 100   1      }
+ 101          
+ 102          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    234    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

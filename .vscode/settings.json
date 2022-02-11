@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "key.h": "c",
+        "reg52.h": "c",
+        "REG52.H": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
+}

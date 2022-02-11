@@ -1,0 +1,1 @@
+"..\System\delay.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\Driver;..\System;..\User) DEBUG OBJECTEXTEND PRINT(.\Listings\delay.lst) OBJECT(..\Output\delay.obj)

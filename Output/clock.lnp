@@ -1,0 +1,10 @@
+"..\Output\main.obj",
+"..\Output\seg.obj",
+"..\Output\key.obj",
+"..\Output\ds1302.obj",
+"..\Output\i2c.obj",
+"..\Output\onewire.obj",
+"..\Output\timer.obj",
+"..\Output\delay.obj" 
+TO "..\Output\clock" 
+PRINT(".\Listings\clock.m51") RAMSIZE(256) 

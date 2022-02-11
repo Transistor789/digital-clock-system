@@ -1,0 +1,62 @@
+C51 COMPILER V9.59.0.0   SEG                                                               12/10/2021 16:33:39 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SEG
+OBJECT MODULE PLACED IN ..\Output\seg.obj
+COMPILER INVOKED BY: F:\Keil_v5\C51\BIN\C51.EXE ..\Driver\seg.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\Driver;..\System;..\U
+                    -ser) DEBUG OBJECTEXTEND PRINT(.\Listings\seg.lst) OBJECT(..\Output\seg.obj)
+
+line level    source
+
+   1          #include "seg.h"
+   2          
+   3          void convert(uchar* string, uchar* seg_code)
+   4          {// string:字符串指针 seg_code:段码数组指针
+   5   1          char i = 0, j = 0, temp;
+   6   1          for (i = 0;i < 8;i++, j++) {
+   7   2              switch (string[j]) {
+   8   3              case '0':temp = 0x3f;break;
+   9   3              case '1':temp = 0x06;break;
+  10   3              case '2':temp = 0x5b;break;
+  11   3              case '3':temp = 0x4f;break;
+  12   3              case '4':temp = 0x66;break;
+  13   3              case '5':temp = 0x6d;break;
+  14   3              case '6':temp = 0x7d;break;
+  15   3              case '7':temp = 0x07;break;
+  16   3              case '8':temp = 0x7f;break;
+  17   3              case '9':temp = 0x6f;break;
+  18   3              case 'C':temp = 0x39;break;
+  19   3              case ' ':temp = 0x00;break;
+  20   3              case '-':temp = 0x40;break;
+  21   3              default:temp = ' ';
+  22   3              }
+  23   2              if (string[j + 1] == '.') {
+  24   3                  j++;
+  25   3                  temp |= 0x80;
+  26   3              }
+  27   2              seg_code[i] = temp;
+  28   2          }
+  29   1      }
+  30          void display(uchar* seg_code, uchar pos)
+  31          {// seg_code:段码数组指针 pos:位置变量
+  32   1          // 消影
+  33   1          P0 = 0;
+  34   1          P2 &= 0xe3;
+  35   1          // 显示
+  36   1          P0 = seg_code[pos]; //段选
+  37   1          P2 = P2 & 0xe3 | ((7 - pos) << 2); // 位选
+  38   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    256    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

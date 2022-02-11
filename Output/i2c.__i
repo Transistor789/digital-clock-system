@@ -1,0 +1,1 @@
+"..\Driver\i2c.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\Driver;..\System;..\User) DEBUG OBJECTEXTEND PRINT(.\Listings\i2c.lst) OBJECT(..\Output\i2c.obj)
